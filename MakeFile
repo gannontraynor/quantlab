@@ -1,0 +1,55 @@
+# ============================
+# QuantLab Monorepo Tooling
+# ============================
+
+PYTHON=python3
+BACKEND_DIR=backend
+FRONTEND_DIR=frontend
+VENV=venv
+
+# ----------------------------
+# ENVIRONMENT
+# ----------------------------
+
+venv:
+	$(PYTHON) -m venv $(VENV)
+	@echo "Virtual environment created. Activate with:"
+	@echo "   source venv/bin/activate"
+
+install-backend:
+	source $(VENV)/bin/activate && pip install -r $(BACKEND_DIR)/requirements.txt
+
+install-frontend:
+	cd $(FRONTEND_DIR) && npm install
+
+install: venv install-backend install-frontend
+
+# ----------------------------
+# RUN
+# ----------------------------
+
+backend:
+	source $(VENV)/bin/activate && uvicorn app.main:app --reload --app-dir backend
+
+frontend:
+	cd $(FRONTEND_DIR) && npm run dev
+
+dev:
+	scripts/dev_all.sh
+
+# ----------------------------
+# LINT
+# ----------------------------
+
+format:
+	source $(VENV)/bin/activate && black backend
+
+lint:
+	source $(VENV)/bin/activate && ruff backend
+
+# ----------------------------
+# CLEAN
+# ----------------------------
+
+clean:
+	rm -rf $(VENV)
