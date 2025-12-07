@@ -1,3 +1,4 @@
+.PHONY: backend frontend dev install install-backend install-frontend format lint clean
 # ============================
 # QuantLab Monorepo Tooling
 # ============================
@@ -17,7 +18,7 @@ venv:
 	@echo "   source venv/bin/activate"
 
 install-backend:
-	source $(VENV)/bin/activate && pip install -r $(BACKEND_DIR)/requirements.txt
+	$(VENV)/bin/pip install -r $(BACKEND_DIR)/requirements.txt
 
 install-frontend:
 	cd $(FRONTEND_DIR) && npm install
@@ -29,23 +30,23 @@ install: venv install-backend install-frontend
 # ----------------------------
 
 backend:
-	source $(VENV)/bin/activate && uvicorn app.main:app --reload --app-dir backend
+	./scripts/dev_backend.sh
 
 frontend:
 	cd $(FRONTEND_DIR) && npm run dev
 
 dev:
-	scripts/dev_all.sh
+	./scripts/dev_all.sh
 
 # ----------------------------
-# LINT
+# LINT & FORMAT
 # ----------------------------
 
 format:
-	source $(VENV)/bin/activate && black backend
+	$(VENV)/bin/black backend
 
 lint:
-	source $(VENV)/bin/activate && ruff backend
+	$(VENV)/bin/ruff backend
 
 # ----------------------------
 # CLEAN
