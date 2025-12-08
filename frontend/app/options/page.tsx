@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { GreeksChart } from "@/components/GreeksChart";
 import {
   priceOption,
   OptionInput,
@@ -178,13 +179,16 @@ export default function OptionsPage() {
             <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 shadow-lg">
               <h2 className="text-lg font-medium mb-2">Greeks</h2>
               {result ? (
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <Greek label="Delta" value={result.greeks.delta} />
-                  <Greek label="Gamma" value={result.greeks.gamma} />
-                  <Greek label="Vega" value={result.greeks.vega} />
-                  <Greek label="Theta" value={result.greeks.theta} />
-                  <Greek label="Rho" value={result.greeks.rho} />
-                </div>
+                <>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <Greek label="Delta" value={result.greeks.delta} />
+                    <Greek label="Gamma" value={result.greeks.gamma} />
+                    <Greek label="Vega" value={result.greeks.vega} />
+                    <Greek label="Theta" value={result.greeks.theta} />
+                    <Greek label="Rho" value={result.greeks.rho} />
+                  </div>
+                  <GreeksChart greeks={result.greeks} />
+                </>
               ) : (
                 <p className="text-xs text-slate-500">
                   Greeks will populate once you run a pricing request.
@@ -235,9 +239,7 @@ function Greek({ label, value }: GreekProps) {
   return (
     <div className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2">
       <p className="text-[11px] text-slate-400">{label}</p>
-      <p className="text-sm font-semibold text-slate-100">
-        {value.toFixed(4)}
-      </p>
+      <p className="text-sm font-semibold text-slate-100">{value.toFixed(4)}</p>
     </div>
   );
 }

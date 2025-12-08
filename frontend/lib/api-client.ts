@@ -1,6 +1,7 @@
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
+
 export type OptionType = "call" | "put";
 
 export interface OptionInput {
@@ -41,6 +42,48 @@ export async function priceOption(
     const text = await res.text();
     throw new Error(
       `Pricing request failed (${res.status}): ${text || res.statusText}`
+    );
+  }
+
+  return res.json();
+}
+
+
+export interface Position {
+  symbol: string;
+  quantity: number;
+  avg_price: number;
+  current_price: number;
+}
+
+export interface PortfolioSummary {
+  total_value: number;
+  total_cost: number;
+  unrealized_pnl: number;
+  unrealized_pnl_pct: number;
+}
+
+export interface PortfolioSnapshot {
+  name: string;
+  positions: Position[];
+}
+
+export async function fetchPortfolioSummary(
+  snapshot: PortfolioSnapshot
+): Promise<PortfolioSummary> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/portfolio/summary`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(snapshot),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(
+      `Portfolio summary failed (${res.status}): ${text || res.statusText}`
     );
   }
 
